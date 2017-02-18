@@ -1,7 +1,7 @@
-var webpack = require('webpack');
-var cssnext = require('postcss-cssnext');
-var postcssFocus = require('postcss-focus');
-var postcssReporter = require('postcss-reporter');
+const webpack = require('webpack');
+const cssnext = require('postcss-cssnext');
+const postcssFocus = require('postcss-focus');
+const postcssReporter = require('postcss-reporter');
 
 module.exports = {
   devtool: 'cheap-module-eval-source-map',
@@ -35,27 +35,56 @@ module.exports = {
   },
 
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.css$/,
         exclude: /node_modules/,
-        loader: 'style-loader!css-loader?localIdentName=[name]__[local]__[hash:base64:5]&modules&importLoaders=1&sourceMap!postcss-loader',
-      }, {
+        use: [
+          'style-loader',
+          {
+            loader: 'css-loader',
+            localIdentName: '[name]__[local]__[hash:base64:5]',
+            modules: true,
+            importLoaders: 1,
+            sourceMap: true
+          },
+          'postcss-loader'
+        ]
+      },
+      {
         test: /\.css$/,
         include: /node_modules/,
-        loaders: ['style-loader', 'css-loader'],
-      }, {
-        test: /\.jsx*$/,
-        exclude: [/node_modules/, /.+\.config.js/],
-        loader: 'babel',
-      }, {
-        test: /\.(jpe?g|gif|png|svg)$/i,
-        loader: 'url-loader?limit=10000',
-      }, {
-        test: /\.json$/,
-        loader: 'json-loader',
+        use: [
+          'style-loader',
+          'css-loader'
+        ]
       },
-    ],
+      {
+        test: /\.jsx*$/,
+        exclude: [
+          /node_modules/,
+          /.+\.config.js/
+        ],
+        use: [
+          'babel'
+        ]
+      },
+      {
+        test: /\.(jpe?g|gif|png|svg)$/i,
+        use: [
+          {
+            loader: 'url-loader',
+            limit: 10000
+          }
+        ]
+      },
+      {
+        test: /\.json$/,
+        use: [
+          'json-loader'
+        ]
+      }
+    ]
   },
 
   plugins: [

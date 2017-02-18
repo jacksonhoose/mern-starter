@@ -1,11 +1,11 @@
-var webpack = require('webpack');
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
-var ManifestPlugin = require('webpack-manifest-plugin');
-var ChunkManifestPlugin = require('chunk-manifest-webpack-plugin');
-var cssnext = require('postcss-cssnext');
-var postcssFocus = require('postcss-focus');
-var postcssReporter = require('postcss-reporter');
-var cssnano = require('cssnano');
+const webpack = require('webpack');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const ManifestPlugin = require('webpack-manifest-plugin');
+const ChunkManifestPlugin = require('chunk-manifest-webpack-plugin');
+const cssnext = require('postcss-cssnext');
+const postcssFocus = require('postcss-focus');
+const postcssReporter = require('postcss-reporter');
+const cssnano = require('cssnano');
 
 module.exports = {
   devtool: 'hidden-source-map',
@@ -21,7 +21,7 @@ module.exports = {
   },
 
   output: {
-    path: __dirname + '/dist/',
+    path: `${__dirname}/dist/`,
     filename: '[name].[chunkhash].js',
     publicPath: '/',
   },
@@ -35,25 +35,44 @@ module.exports = {
   },
 
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.css$/,
         exclude: /node_modules/,
-        loader: ExtractTextPlugin.extract('style-loader', 'css-loader?localIdentName=[hash:base64]&modules&importLoaders=1!postcss-loader'),
+        use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: [
+            {
+              loader: 'css-loader',
+              localIdentName: '[hash:base64]',
+              modules: true,
+              importLoaders: 1
+            }
+            'postcss-loader'
+          ]
+        }),
       }, {
         test: /\.css$/,
         include: /node_modules/,
-        loaders: ['style-loader', 'css-loader'],
+        use: [
+          'style-loader',
+          'css-loader'
+        ],
       }, {
         test: /\.jsx*$/,
         exclude: /node_modules/,
-        loader: 'babel',
+        use: 'babel',
       }, {
         test: /\.(jpe?g|gif|png|svg)$/i,
-        loader: 'url-loader?limit=10000',
+        use: [
+          {
+            loader: 'url-loader',
+            limit: 10000
+          }
+        ],
       }, {
         test: /\.json$/,
-        loader: 'json-loader',
+        use: 'json-loader',
       },
     ],
   },
@@ -74,8 +93,8 @@ module.exports = {
       basePath: '/',
     }),
     new ChunkManifestPlugin({
-      filename: "chunk-manifest.json",
-      manifestVariable: "webpackManifest",
+      filename: 'chunk-manifest.json',
+      manifestVariable: 'webpackManifest',
     }),
     new webpack.optimize.UglifyJsPlugin({
       compressor: {

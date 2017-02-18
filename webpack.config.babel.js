@@ -1,8 +1,8 @@
-var cssnext = require('postcss-cssnext');
-var postcssFocus = require('postcss-focus');
-var postcssReporter = require('postcss-reporter');
+const cssnext = require('postcss-cssnext');
+const postcssFocus = require('postcss-focus');
+const postcssReporter = require('postcss-reporter');
 
-var cssModulesIdentName = '[name]__[local]__[hash:base64:5]';
+let cssModulesIdentName = '[name]__[local]__[hash:base64:5]';
 if (process.env.NODE_ENV === 'production') {
   cssModulesIdentName = '[hash:base64]';
 }
@@ -20,17 +20,32 @@ module.exports = {
     ],
   },
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.css$/,
         exclude: /node_modules/,
-        loader: 'style-loader!css-loader?localIdentName=' + cssModulesIdentName + '&modules&importLoaders=1&sourceMap!postcss-loader',
+        use: [
+          loader: 'style-loader',
+          {
+            loader: 'css-loader',
+            localIdentName: cssModulesIdentName,
+            modules: true,
+            importLoaders: 1,
+            sourceMap: true
+          },
+          'postcss-loader'
+        ]
       },
       {
         test: /\.jpe?g$|\.gif$|\.png$|\.svg$/i,
-        loader: 'url-loader?limit=10000',
-      },
-    ],
+        use: [
+          {
+            loader: 'url-loader',
+            limit: 10000
+          }
+        ]
+      }
+    ]
   },
   postcss: () => [
     postcssFocus(),

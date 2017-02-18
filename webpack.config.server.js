@@ -1,13 +1,13 @@
-var fs = require('fs');
-var path = require('path');
-var ExternalsPlugin = require('webpack-externals-plugin');
+const fs = require('fs');
+const path = require('path');
+const ExternalsPlugin = require('webpack-externals-plugin');
 
 module.exports = {
 
   entry: path.resolve(__dirname, 'server/server.js'),
 
   output: {
-    path: __dirname + '/dist/',
+    path: `${__dirname}/dist/`,
     filename: 'server.bundle.js',
   },
 
@@ -27,11 +27,11 @@ module.exports = {
   },
 
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        loader: 'babel-loader',
+        use: 'babel-loader',
         query: {
           presets: [
             'react',
@@ -49,7 +49,7 @@ module.exports = {
         },
       }, {
         test: /\.json$/,
-        loader: 'json-loader',
+        use: 'json-loader',
       },
     ],
   },
